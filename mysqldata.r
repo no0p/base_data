@@ -1,8 +1,8 @@
-install.packages('RPostgreSQL', repos='http://cran.us.r-project.org')
+install.packages('RMySQL', repos='http://cran.us.r-project.org')
 
 # Establish database connection
-library('RPostgreSQL')
-drv <- dbDriver("PostgreSQL")
+library('RMySQL')
+drv <- dbDriver("RMySQL")
 con <- dbConnect(drv, dbname="robert", user="robert", host="localhost")
 
 ddlq <- 'create schema rdata;'
