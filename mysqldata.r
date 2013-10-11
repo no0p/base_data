@@ -1,11 +1,10 @@
-install.packages('RMySQL', repos='http://cran.us.r-project.org')
+#install.packages('RMySQL', repos='http://cran.us.r-project.org')
 
 # Establish database connection
 library('RMySQL')
-drv <- dbDriver("RMySQL")
-con <- dbConnect(drv, dbname="robert", user="robert", host="localhost")
+con <- dbConnect(MySQL(), dbname="robert", user="robert", password="robert", host="localhost")
 
-ddlq <- 'create schema rdata;'
+ddlq <- 'create database rdata;'
 insq <- ''
 table_names <- c()
 
@@ -47,7 +46,7 @@ for (i in data()$results[,3]) {
     col_names <- c()
     for (n in colnames(fr)) {
       # determine type
-      dtype <- 'text'
+      dtype <- 'varchar(255)'
       if (class(as.vector(fr[,n])[1]) == 'numeric') {
         dtype <- 'numeric'
       }
@@ -58,14 +57,14 @@ for (i in data()$results[,3]) {
         col <- 'rid'
       }
       
-      cols <- paste(cols, ', "', col, '" ', dtype, sep="")
-      col_names <- c(col_names, paste('"', col, '"', sep=""))
+      cols <- paste(cols, ', `', col, '` ', dtype, sep="")
+      col_names <- c(col_names, paste('`', col, '`', sep=""))
     }
     
     # Generate values sql for insert statement
     data_vals <- apply(fr, 1, parse_row)
       
-    ctq <- sprintf('create table rdata.%s (id serial primary key %s);', table_name, cols )
+    ctq <- sprintf('create table rdata.%s (id int primary key auto_increment %s);', table_name, cols )
     dtq <- sprintf('insert into rdata.%s (%s) values %s;', table_name, paste(col_names, collapse=", "), paste(data_vals, collapse=", "))
     
     ddlq <- paste(ddlq, ctq)
@@ -74,6 +73,11 @@ for (i in data()$results[,3]) {
   
 }
 
-dbSendQuery(con, ddlq)
-dbSendQuery(con, insq)
+for (str in strsplit(ddlq, ';')[[1]]) {
+  dbSendQuery(con, paste(str, ';'))
+}
+
+for (str in strsplit(insq, ';')[[1]]) {
+  dbSendQuery(con, paste(str, ';'))
+}
 

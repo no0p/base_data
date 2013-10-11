@@ -1,4 +1,4 @@
-install.packages('RPostgreSQL', repos='http://cran.us.r-project.org')
+#install.packages('RPostgreSQL', repos='http://cran.us.r-project.org')
 
 # Establish database connection
 library('RPostgreSQL')
