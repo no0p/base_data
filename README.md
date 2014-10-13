@@ -10,6 +10,8 @@ Edit the database connection details in the script.  The run the script:
 Rscript pgdata.r
 ```
 
+The script will populate tables in an rdata schema.
+
 ## Dependencies
 
 The script obviously requires the R environment which can be installed on ubuntu systems with:
